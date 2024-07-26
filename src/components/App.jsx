@@ -3,13 +3,17 @@ import { useSelector, useDispatch } from 'react-redux';
 import ContactForm from './ContactForm';
 import ContactList from './ContactList';
 import Filter from './Filter';
-import { addContact, deleteContact } from '../slices/contactSlice';
-import { setFilter } from '../slices/filterSlice';
+import {
+  addContact,
+  deleteContact,
+  setFilter,
+  selectVisibleContacts,
+} from '../slices/contactSlice';
 import '../styles/main.css';
 
 export const App = () => {
-  const contacts = useSelector(state => state.contacts);
-  const filter = useSelector(state => state.filter);
+  const visibleContacts = useSelector(selectVisibleContacts);
+  const filter = useSelector(state => state.contacts.filter);
   const dispatch = useDispatch();
 
   const handleAddContact = (name, number) => {
@@ -29,12 +33,6 @@ export const App = () => {
     dispatch(setFilter(e.target.value));
   };
 
-  const getVisibleContacts = () => {
-    return contacts.filter(contact =>
-      contact.name.toLowerCase().includes(filter.toLowerCase())
-    );
-  };
-
   return (
     <div className="divForm">
       <h1>Phonebook</h1>
@@ -42,7 +40,7 @@ export const App = () => {
       <h2>Contacts</h2>
       <Filter value={filter} onChange={handleChangeFilter} />
       <ContactList
-        contacts={getVisibleContacts()}
+        contacts={visibleContacts}
         onDeleteContact={handleDeleteContact}
       />
     </div>
